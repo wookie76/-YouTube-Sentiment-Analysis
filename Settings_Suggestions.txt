@@ -1,0 +1,114 @@
+
+YouTube Sentiment Analysis: Configuration Guide
+
+This guide helps you adjust settings for analyzing YouTube video transcripts. The right
+settings depend on the video's length and your analysis goals.
+
+I. Video Length Categories:
+
+Short (< 5 minutes): News clips, short tutorials, quick updates.
+
+Medium (5-30 minutes): Vlogs, explainers, product reviews, most YouTube
+content.
+
+Long (30+ minutes): Lectures, interviews, documentaries, podcasts.
+
+II. Configuration Sliders:
+
+Chunk Size (Words):
+
+What it does: Divides the transcript into smaller parts (chunks) for
+analysis. Smaller chunks provide more detail, larger chunks give a
+broader overview.
+
+Recommendations:
+
+Short Videos: 50-100 words. Start with 50 for very granular analysis.
+If that's too detailed, increase to 75-100.
+
+Medium Videos: 100-200 words. Balances detail and summarization.
+
+Long Videos: 250-500 words. Focuses on major topic shifts.
+
+Advanced (Behind the Scenes): We also use sentence boundaries whenever
+possible, as sentences are naturally meaningful units.
+
+Top Keywords per Chunk:
+
+What it does: How many of the most important words/phrases to identify
+within each chunk.
+
+Recommendations:
+
+Short Videos: 3-5 keywords.
+
+Medium Videos: 5-7 keywords.
+
+Long Videos: 7-10 keywords. Consider going higher (10-15) for very
+large chunks.
+
+Advanced (Behind the Scenes) Keyword extraction leverages spaCy, KeyBERT and
+TextRank for extracting relevant, multi-word phrases when installed. Good
+quality keyword choices are critical.
+
+Top Keywords Overall:
+
+What it does: How many of the most important words/phrases to identify
+across the entire video.
+
+Recommendations:
+
+Short Videos: 5-10 keywords.
+
+Medium Videos: 10-20 keywords.
+
+Long Videos: 20-50 keywords.
+
+Advanced: We consider both the frequency of keywords and how unique they
+are to this specific video, to avoid showing very common/generic words.
+
+Lemmatization (Checkbox):
+
+What it does: Should analysis consider just root meaning of words in context or
+are verb tenses, plurals etc important on their own
+
+Recommendations:
+*Lemmatization On (Default and Recommended in general): Analyzes word roots
+which aids overall accuracy. Better text interpreation.
+*Lemmatization off : Useful when subtle difference in wording can change
+underlying sentiment (more precision). Can increase noise in analysis and
+make interpretation more complex.
+
+Advanced: High accuracy, well understood keywords critical for high quality
+summary data.
+
+III. Key Principles:
+
+Granularity vs. Overview: Smaller chunk sizes and fewer keywords per chunk
+provide more detailed, granular analysis. Larger chunk sizes and more keywords
+provide a broader overview.
+
+Video Length Matters: Adjust settings based on the length of your video.
+
+Experimentation: These are starting points. Feel free to adjust the sliders
+and see how the results change! The best settings depend on the specific video.
+
+Lemmatization When in doubt, begin with lemmatization switched ON.
+
+IV. Under the Hood (Advanced Details - Optional for the User):
+
+Sentence-Based Chunking: Where possible, we prioritize chunking by complete
+sentences, as this is often more semantically meaningful than fixed word counts.
+
+Keyword Quality: We use sophisticated techniques, combining KeyBERT/TextRank
+(text summarization methods), and spaCy(language comprehension library) to
+extract not just single words, but also key phrases (e.g., "natural language
+processing"). This provides richer insights than simple word counts.
+
+Stop Word Filtering: Common words ("the," "a," "is") and YouTube-specific
+terms ("like," "subscribe") are automatically filtered out to ensure keywords
+are meaningful.
+
+Transcript pre-processing Youtube ASR transcripts improved for accuracy by
+program, to remove extraneous symbols and ensure correct sentence boundaries,
+before analysis.

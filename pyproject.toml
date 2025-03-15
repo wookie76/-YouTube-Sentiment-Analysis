@@ -1,0 +1,112 @@
+# pyproject.toml
+
+[build-system]
+requires = [
+    "setuptools",  #  The code doesn't directly use setuptools, but it's a common build backend.
+    "wheel",       #  Good practice to include wheel.
+]
+build-backend = "setuptools.build_meta"  #  Assume setuptools, can be changed if another backend is used.
+
+
+[project]
+name = "political-speech-analyzer"  # Replace with your actual project name.
+version = "0.1.0"  # Replace with your project version.
+description = "Analyzes political speech from YouTube transcripts for bias, sentiment, and other features." #  Add a good description
+readme = "README.md"   # Assuming you have a README.md, add this.
+requires-python = ">=3.8"  # Adjust as necessary.  3.8 is a safe, common minimum.
+dependencies = [
+    "matplotlib",
+    "nltk",
+    "numpy",
+    "pandas",
+    "plotly",
+    "seaborn",
+    "streamlit",
+    "scikit-learn",  # For TfidfVectorizer
+    "tqdm",
+    "youtube-transcript-api",
+    "torch",      #  Used in the `load_model` function.
+    "transformers" #  Used for loading models.
+]
+
+[tool.setuptools] # example setuptools specific settings, adjust to preferences
+# Add setuptools-specific configuration here if needed. For example:
+# package-dir = {"" = "src"}  # If your code is in a `src` directory.
+# packages = find:  # If using setuptools' package auto-discovery.
+
+[tool.pytest.ini_options] #example if pytest were used,
+# Add pytest configuration here, *if* you're using pytest. For example:
+# testpaths = ["tests"]
+
+[tool.black]
+line-length = 88  # Example configuration for the Black code formatter.
+
+[tool.isort]
+profile = "black"  # Example: configure isort to be compatible with Black.
+line_length = 88
+
+[tool.mypy]
+# Add mypy configuration if you use it for static typing. Example:
+# ignore_missing_imports = true
+# check_untyped_defs = true
+
+[tool.streamlit]
+# Streamlit does not typically store configuration *here*; it uses command-line arguments and in-app settings
+# So this section would usually be empty, or might be used by some hypothetical Streamlit plugin.
+
+# --- Configuration Data ---
+# This section mirrors the `Constants` and `AnalysisConfig` classes in the Python code.
+
+[tool.speech_analyzer]  # Custom section for application-specific configurations.
+max_token_length = 512
+default_chunk_size = 128
+default_top_n_keywords_chunk = 5
+default_top_n_keywords_overall = 10
+bias_colors = ["blue", "gray", "red"]
+hate_colors = ["red", "green"]
+sentiment_colors = ["#FF0000", "#FF6666", "#808080", "#66FF66", "#00FF00"]
+
+[tool.speech_analyzer.analysis_config]
+stop_words = [ # This would be *very* long if you included all of stopwords.words("english")
+    "the", "a", "an", "and", "of", "to", "in", "is", "it", "that", "for" # ... add more common stopwords here
+    # It's better to handle the full stopwords list in the Python code for maintainability,
+    #  but I include some here as an example.
+]
+url_token = "<URL>"
+mention_token = "<MENTION>"
+youtube_regex = '''
+(?:https?://)?(?:www\.)?(?:youtube|youtu|youtube-nocookie)[.](?:com|be)/
+(?:watch\?v=|embed/|v/|.+\?v=)?([^&=%?]{11})
+'''
+abbreviations = [
+    "Mr.", "Ms.", "Mrs.", "Dr.", "Prof.", "St.", "Ave.", "etc.", "U.S.A.", "U.K."
+]
+
+[tool.speech_analyzer.models] # configuration data for each of the models
+# politicalBiasBERT
+[[tool.speech_analyzer.models.politicalBiasBERT]]
+model_name = "bucketresearch/politicalBiasBERT"
+labels = ["left", "center", "right"]
+task = "bias"
+description = "Detects political bias (left, center, right)."
+
+# roberta-hate-speech
+[[tool.speech_analyzer.models.roberta_hate_speech]]
+model_name = "facebook/roberta-hate-speech-dynabench-r4-target"
+labels = ["nothate", "hate"]
+task = "hate_speech"
+description = "Detects hate speech."
+
+# bert-base-multilingual-uncased-sentiment
+[[tool.speech_analyzer.models.bert_base_multilingual_uncased_sentiment]]
+model_name = "nlptown/bert-base-multilingual-uncased-sentiment"
+labels = ["Very Negative", "Negative", "Neutral", "Positive", "Very Positive"]
+task = "sentiment"
+description = "Detects sentiment."
+
+# english-sarcasm-detector
+[[tool.speech_analyzer.models.english_sarcasm_detector]]
+model_name = "helinivan/english-sarcasm-detector"
+labels = ["NOT_SARCASM", "SARCASM"]
+task = "sarcasm"
+description = "Detects sarcasm in text (BERT-based)."
